@@ -43,7 +43,7 @@
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-end;
             padding-bottom: 2vh;
             border-bottom: 1px solid var(--divider);
         }
@@ -55,25 +55,42 @@
             letter-spacing: 0.02em;
         }
 
-        .header-meta {
-            font-size: clamp(11px, 1vw, 14px);
-            color: var(--text-muted);
+        .clock-block {
+            text-align: right;
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
         }
 
-        .pulse {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #4ade80;
-            animation: pulse 2s ease-in-out infinite;
+        .clock-time {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(28px, 3.2vw, 48px);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            font-variant-numeric: tabular-nums;
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
         }
 
-        @keyframes pulse {
+        .clock-colon {
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            50% { opacity: 0.35; }
+        }
+
+        .clock-date {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(13px, 1.2vw, 18px);
+            color: var(--text-muted);
+            letter-spacing: 0.01em;
         }
 
         .main {
@@ -156,9 +173,11 @@
 <body>
     <header class="header">
         <div class="header-title">Orlofshús — staða</div>
-        <div class="header-meta">
-            <span class="pulse"></span>
-            <span>Síðast uppfært <span id="last-updated">—</span></span>
+        <div class="clock-block">
+            <div class="clock-time">
+                <span id="clock-hours">--</span><span class="clock-colon">:</span><span id="clock-minutes">--</span>
+            </div>
+            <div class="clock-date" id="clock-date">—</div>
         </div>
     </header>
 
@@ -180,20 +199,27 @@
 
     <footer class="footer">
         <span class="footer-brand">Mælaborð</span>
-        <span>Endurnýjast á 5 mín. fresti</span>
+        <span>Endurnýjast á 30 mín. fresti</span>
     </footer>
 
     <script>
-        function updateTimestamp() {
+        function updateClock() {
             const now = new Date();
-            const opts = { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('last-updated').textContent =
-                now.toLocaleString('is-IS', opts);
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock-hours').textContent = hh;
+            document.getElementById('clock-minutes').textContent = mm;
+
+            const dateOpts = { weekday: 'long', day: 'numeric', month: 'long' };
+            const dateStr = now.toLocaleDateString('is-IS', dateOpts);
+            document.getElementById('clock-date').textContent =
+                dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
         }
 
-        updateTimestamp();
+        updateClock();
+        setInterval(updateClock, 1000);
 
-        setTimeout(() => location.reload(), 5 * 60 * 1000);
+        setTimeout(() => location.reload(), 30 * 60 * 1000);
     </script>
 </body>
 </html>
