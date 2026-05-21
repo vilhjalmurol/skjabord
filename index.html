@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orlofshúsa mælaborð</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0F1419;
+            --surface: #161C23;
+            --text-primary: #F5F5F0;
+            --text-muted: rgba(245, 245, 240, 0.55);
+            --text-faint: rgba(245, 245, 240, 0.30);
+            --accent: #C9A961;
+            --divider: rgba(245, 245, 240, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: var(--bg);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            padding: 4vh 5vw;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2vh;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .header-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(20px, 2.2vw, 32px);
+            letter-spacing: 0.02em;
+        }
+
+        .header-meta {
+            font-size: clamp(11px, 1vw, 14px);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4vw;
+            align-items: center;
+            justify-items: center;
+            padding: 4vh 0;
+        }
+
+        .metric {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2vh;
+        }
+
+        .metric-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: clamp(14px, 1.5vw, 22px);
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            max-width: 90%;
+        }
+
+        .metric-value {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(120px, 18vw, 280px);
+            line-height: 0.9;
+            letter-spacing: -0.04em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .metric-sublabel {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: clamp(14px, 1.3vw, 20px);
+            color: var(--text-faint);
+            font-weight: 300;
+        }
+
+        .divider-vertical {
+            position: absolute;
+            left: 50%;
+            top: 25%;
+            bottom: 25%;
+            width: 1px;
+            background: var(--divider);
+        }
+
+        .main-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+        }
+
+        .footer {
+            padding-top: 2vh;
+            border-top: 1px solid var(--divider);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: clamp(11px, 1vw, 14px);
+            color: var(--text-faint);
+        }
+
+        .footer-brand {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-title">Orlofshús — staða</div>
+        <div class="header-meta">
+            <span class="pulse"></span>
+            <span>Síðast uppfært <span id="last-updated">—</span></span>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <div class="divider-vertical"></div>
+        <main class="main">
+            <div class="metric">
+                <div class="metric-label">Laus hús næstu helgi</div>
+                <div class="metric-value" id="metric-1">0</div>
+                <div class="metric-sublabel">22.–24. maí</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Laus hús helgina eftir</div>
+                <div class="metric-value" id="metric-2">20</div>
+                <div class="metric-sublabel">29.–31. maí</div>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <span class="footer-brand">Mælaborð</span>
+        <span>Endurnýjast á 5 mín. fresti</span>
+    </footer>
+
+    <script>
+        function updateTimestamp() {
+            const now = new Date();
+            const opts = { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('last-updated').textContent =
+                now.toLocaleString('is-IS', opts);
+        }
+
+        updateTimestamp();
+
+        setTimeout(() => location.reload(), 5 * 60 * 1000);
+    </script>
+</body>
+</html>
