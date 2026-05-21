@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/ical.js@1.5.0/build/ical.min.js"></script>
     <style>
         :root {
             --bg: #0F1419;
@@ -14,15 +15,13 @@
             --text-primary: #F5F5F0;
             --text-muted: rgba(245, 245, 240, 0.55);
             --text-faint: rgba(245, 245, 240, 0.30);
+            --text-ghost: rgba(245, 245, 240, 0.15);
             --accent: #C9A961;
+            --accent-soft: rgba(201, 169, 97, 0.18);
             --divider: rgba(245, 245, 240, 0.08);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
             height: 100%;
@@ -37,14 +36,15 @@
         body {
             display: flex;
             flex-direction: column;
-            padding: 4vh 5vw;
+            padding: 3vh 4vw;
+            gap: 2vh;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            padding-bottom: 2vh;
+            padding-bottom: 1.5vh;
             border-bottom: 1px solid var(--divider);
         }
 
@@ -90,41 +90,33 @@
             font-weight: 300;
             font-size: clamp(13px, 1.2vw, 18px);
             color: var(--text-muted);
-            letter-spacing: 0.01em;
         }
 
-        .main {
-            flex: 1;
+        .metrics-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 4vw;
-            align-items: center;
-            justify-items: center;
-            padding: 4vh 0;
+            padding: 1vh 0;
         }
 
         .metric {
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2vh;
         }
 
         .metric-label {
             font-family: 'Inter', sans-serif;
             font-weight: 500;
-            font-size: clamp(14px, 1.5vw, 22px);
+            font-size: clamp(11px, 1.1vw, 14px);
             color: var(--text-muted);
-            letter-spacing: 0.08em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            max-width: 90%;
+            margin-bottom: 0.8vh;
         }
 
         .metric-value {
             font-family: 'Fraunces', serif;
             font-weight: 300;
-            font-size: clamp(120px, 18vw, 280px);
+            font-size: clamp(64px, 9vw, 140px);
             line-height: 0.9;
             letter-spacing: -0.04em;
             font-variant-numeric: tabular-nums;
@@ -133,33 +125,149 @@
         .metric-sublabel {
             font-family: 'Fraunces', serif;
             font-style: italic;
-            font-size: clamp(14px, 1.3vw, 20px);
+            font-size: clamp(12px, 1.1vw, 16px);
             color: var(--text-faint);
             font-weight: 300;
+            margin-top: 0.5vh;
         }
 
-        .divider-vertical {
-            position: absolute;
-            left: 50%;
-            top: 25%;
-            bottom: 25%;
-            width: 1px;
+        .section-rule {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(13px, 1.3vw, 18px);
+            letter-spacing: 0.05em;
+        }
+
+        .section-rule::after {
+            content: '';
+            flex: 1;
+            height: 1px;
             background: var(--divider);
         }
 
-        .main-wrapper {
-            position: relative;
+        .ribbon {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 8px;
             flex: 1;
+            min-height: 0;
+        }
+
+        .day {
             display: flex;
+            flex-direction: column;
+            min-height: 0;
+            position: relative;
+        }
+
+        .day.empty {
+            opacity: 0.4;
+        }
+
+        .day-header {
+            border-top: 1px solid var(--divider);
+            padding-top: 8px;
+            margin-bottom: 8px;
+            min-height: 60px;
+        }
+
+        .day.today .day-header {
+            border-top: 1px solid var(--accent);
+        }
+
+        .day-weekday {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: clamp(9px, 0.85vw, 11px);
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .day.today .day-weekday {
+            color: var(--accent);
+        }
+
+        .day-number {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(22px, 2.4vw, 36px);
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+
+        .day-month {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(10px, 0.95vw, 13px);
+            color: var(--text-faint);
+            margin-top: 2px;
+        }
+
+        .events {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+        }
+
+        .event {
+            padding: 8px 10px;
+            background: var(--surface);
+            border-left: 2px solid var(--accent);
+            border-radius: 2px;
+        }
+
+        .day.today .event {
+            background: var(--accent-soft);
+        }
+
+        .event-time {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: clamp(9px, 0.85vw, 11px);
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            margin-bottom: 2px;
+        }
+
+        .event-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: clamp(11px, 1.05vw, 14px);
+            line-height: 1.3;
+            color: var(--text-primary);
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .loading {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-faint);
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: 14px;
         }
 
         .footer {
-            padding-top: 2vh;
+            padding-top: 1.5vh;
             border-top: 1px solid var(--divider);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: clamp(11px, 1vw, 14px);
+            font-size: clamp(10px, 0.9vw, 12px);
             color: var(--text-faint);
         }
 
@@ -181,28 +289,36 @@
         </div>
     </header>
 
-    <div class="main-wrapper">
-        <div class="divider-vertical"></div>
-        <main class="main">
-            <div class="metric">
-                <div class="metric-label">Laus hús næstu helgi</div>
-                <div class="metric-value" id="metric-1">0</div>
-                <div class="metric-sublabel">22.–24. maí</div>
-            </div>
-            <div class="metric">
-                <div class="metric-label">Laus hús helgina eftir</div>
-                <div class="metric-value" id="metric-2">18</div>
-                <div class="metric-sublabel">29.–31. maí</div>
-            </div>
-        </main>
+    <div class="metrics-row">
+        <div class="metric">
+            <div class="metric-label">Laus hús næstu helgi</div>
+            <div class="metric-value" id="metric-1">0</div>
+            <div class="metric-sublabel">22.–24. maí</div>
+        </div>
+        <div class="metric">
+            <div class="metric-label">Laus hús helgina eftir</div>
+            <div class="metric-value" id="metric-2">20</div>
+            <div class="metric-sublabel">29.–31. maí</div>
+        </div>
+    </div>
+
+    <div class="section-rule">Næstu tíu dagar</div>
+
+    <div class="ribbon" id="ribbon">
+        <div class="loading">Sæki dagatal…</div>
     </div>
 
     <footer class="footer">
         <span class="footer-brand">Mælaborð</span>
-        <span>Endurnýjast á 30 mín. fresti</span>
+        <span id="last-sync">—</span>
     </footer>
 
     <script>
+        const ICAL_URL = "PASTE_YOUR_ICAL_URL_HERE";
+
+        const WEEKDAYS_IS = ['Sun', 'Mán', 'Þri', 'Mið', 'Fim', 'Fös', 'Lau'];
+        const MONTHS_IS = ['jan', 'feb', 'mar', 'apr', 'maí', 'jún', 'júl', 'ágú', 'sep', 'okt', 'nóv', 'des'];
+
         function updateClock() {
             const now = new Date();
             const hh = String(now.getHours()).padStart(2, '0');
@@ -210,16 +326,146 @@
             document.getElementById('clock-hours').textContent = hh;
             document.getElementById('clock-minutes').textContent = mm;
 
-            const dateOpts = { weekday: 'long', day: 'numeric', month: 'long' };
-            const dateStr = now.toLocaleDateString('is-IS', dateOpts);
-            document.getElementById('clock-date').textContent =
-                dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            const dateStr = now.toLocaleDateString('is-IS', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('clock-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        }
+
+        function sameDay(a, b) {
+            return a.getFullYear() === b.getFullYear() &&
+                   a.getMonth() === b.getMonth() &&
+                   a.getDate() === b.getDate();
+        }
+
+        function formatTime(date) {
+            return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+        }
+
+        async function loadCalendar() {
+            const ribbon = document.getElementById('ribbon');
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const days = [];
+            for (let i = 0; i < 10; i++) {
+                const d = new Date(today);
+                d.setDate(d.getDate() + i);
+                days.push({ date: d, events: [] });
+            }
+
+            if (!ICAL_URL || ICAL_URL === "https://calendar.google.com/calendar/embed?src=5d7b58f3403ff282b71178d6ef86024ab4c96457e2297abebc10f4dd2446aedc%40group.calendar.google.com&ctz=Atlantic%2FReykjavik") {
+                renderRibbon(days);
+                return;
+            }
+
+            try {
+                const proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(ICAL_URL);
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error('Network error');
+                const text = await response.text();
+
+                const jcalData = ICAL.parse(text);
+                const comp = new ICAL.Component(jcalData);
+                const vevents = comp.getAllSubcomponents('vevent');
+
+                const windowEnd = new Date(today);
+                windowEnd.setDate(windowEnd.getDate() + 10);
+
+                vevents.forEach(vevent => {
+                    const event = new ICAL.Event(vevent);
+                    const start = event.startDate.toJSDate();
+                    if (start >= today && start < windowEnd) {
+                        const dayIndex = Math.floor((start - today) / (1000 * 60 * 60 * 24));
+                        if (dayIndex >= 0 && dayIndex < 10) {
+                            days[dayIndex].events.push({
+                                start: start,
+                                title: event.summary || '(ónefnt)',
+                                allDay: event.startDate.isDate
+                            });
+                        }
+                    }
+                });
+
+                days.forEach(day => {
+                    day.events.sort((a, b) => a.start - b.start);
+                });
+
+                renderRibbon(days);
+                document.getElementById('last-sync').textContent =
+                    'Dagatal samstillt ' + formatTime(new Date());
+            } catch (err) {
+                console.error('Calendar load failed:', err);
+                renderRibbon(days);
+                document.getElementById('last-sync').textContent = 'Dagatal ekki tiltækt';
+            }
+        }
+
+        function renderRibbon(days) {
+            const ribbon = document.getElementById('ribbon');
+            ribbon.innerHTML = '';
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            days.forEach(day => {
+                const isToday = sameDay(day.date, today);
+                const isEmpty = day.events.length === 0;
+
+                const dayEl = document.createElement('div');
+                dayEl.className = 'day' + (isToday ? ' today' : '') + (isEmpty && !isToday ? ' empty' : '');
+
+                const header = document.createElement('div');
+                header.className = 'day-header';
+
+                const weekday = document.createElement('div');
+                weekday.className = 'day-weekday';
+                weekday.textContent = isToday ? 'Í DAG' : WEEKDAYS_IS[day.date.getDay()];
+                header.appendChild(weekday);
+
+                const number = document.createElement('div');
+                number.className = 'day-number';
+                number.textContent = day.date.getDate();
+                header.appendChild(number);
+
+                const month = document.createElement('div');
+                month.className = 'day-month';
+                month.textContent = MONTHS_IS[day.date.getMonth()];
+                header.appendChild(month);
+
+                dayEl.appendChild(header);
+
+                const events = document.createElement('div');
+                events.className = 'events';
+
+                day.events.forEach(ev => {
+                    const eventEl = document.createElement('div');
+                    eventEl.className = 'event';
+
+                    if (!ev.allDay) {
+                        const time = document.createElement('div');
+                        time.className = 'event-time';
+                        time.textContent = formatTime(ev.start);
+                        eventEl.appendChild(time);
+                    }
+
+                    const title = document.createElement('div');
+                    title.className = 'event-title';
+                    title.textContent = ev.title;
+                    eventEl.appendChild(title);
+
+                    events.appendChild(eventEl);
+                });
+
+                dayEl.appendChild(events);
+                ribbon.appendChild(dayEl);
+            });
         }
 
         updateClock();
         setInterval(updateClock, 1000);
 
-        setTimeout(() => location.reload(), 30 * 60 * 1000);
+        loadCalendar();
+        setInterval(loadCalendar, 15 * 60 * 1000);
+
+        setTimeout(() => location.reload(), 60 * 60 * 1000);
     </script>
 </body>
 </html>
