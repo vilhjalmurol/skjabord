@@ -21,6 +21,25 @@
             --divider: rgba(245, 245, 240, 0.08);
         }
 
+        .banner {
+            display: none;
+            background: var(--accent-soft);
+            border-left: 3px solid var(--accent);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(14px, 1.4vw, 20px);
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            padding: 12px 20px;
+            margin-bottom: 2vh;
+            border-radius: 2px;
+        }
+
+        .banner.visible {
+            display: block;
+        }
+
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
@@ -339,6 +358,8 @@
     </style>
 </head>
 <body>
+    <div class="banner" id="banner"></div>
+    
     <header class="header">
         <div class="header-title">Orlofsdeild</div>
         <div class="clock-block">
@@ -368,6 +389,8 @@
     </footer>
 
     <script>
+        const BANNER_TEXT = "Matur: Í dag verður í boði skyr og ber, nýbakað brauð og flatkökur með hangikjöti. Allt pínu heimilislegt og krúttlegt";
+        
         const ICAL_URL = "https://calendar.google.com/calendar/ical/5d7b58f3403ff282b71178d6ef86024ab4c96457e2297abebc10f4dd2446aedc%40group.calendar.google.com/private-412178fd8edb868d6f055e06fcec46fd/basic.ics";
 
         const TASKS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSwtFB5_W-JlVRw_jYBh_R_IUPDkxQBLXjonQP15fooMLrr6arOOs_AB9mugjr_o5c4fsuHfD3TB7yP/pub?gid=0&single=true&output=csv";
@@ -607,7 +630,12 @@ function parseCSV(text) {
                 ribbon.appendChild(dayEl);
             });
         }
-
+const bannerEl = document.getElementById('banner');
+        if (BANNER_TEXT && BANNER_TEXT.trim() !== "") {
+            bannerEl.textContent = BANNER_TEXT;
+            bannerEl.classList.add('visible');
+        }
+        
         updateClock();
         setInterval(updateClock, 1000);
 
