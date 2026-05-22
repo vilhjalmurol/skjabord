@@ -250,29 +250,64 @@
             -webkit-box-orient: vertical;
         }
 
-           .tasks-plain {
+        .tasks {
             padding: 12px 0;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
         }
 
-        .task-row {
-            display: flex;
-            gap: 16px;
-            padding: 6px 0;
+        .task-header {
+            display: grid;
+            grid-template-columns: 2.4fr 1fr 1fr 0.9fr;
+            gap: 24px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--divider);
         }
 
-        .task-row .col {
-            flex: 1;
+        .task-header .col-label {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(9px, 0.85vw, 11px);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-faint);
         }
 
-        .task-row .col-label {
+        .task-row {
+            display: grid;
+            grid-template-columns: 2.4fr 1fr 1fr 0.9fr;
+            gap: 24px;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--divider);
+            align-items: baseline;
+        }
+
+        .task-row:last-child {
+            border-bottom: none;
+        }
+
+        .task-name {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: clamp(15px, 1.4vw, 18px);
+            color: var(--text-primary);
+            margin-bottom: 3px;
+        }
+
+        .task-project {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-size: clamp(11px, 1vw, 12px);
             color: var(--text-faint);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        }
+
+        .task-meta {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(12px, 1.1vw, 14px);
+            color: var(--text-muted);
+        }
+
+        .task-meta.empty {
+            color: var(--text-faint);
         }
         
         .loading {
@@ -323,7 +358,7 @@
 
     <div class="section-rule">Verkefni</div>
 
-    <div class="tasks-plain" id="tasks">
+    <div class="tasks" id="tasks">
         <div class="loading">Sæki verkefni…</div>
     </div>
 
@@ -463,22 +498,48 @@ function parseCSV(text) {
                 const headers = rows[0];
                 const tasks = rows.slice(1).filter(r => r.some(cell => cell.trim() !== ''));
 
-                container.innerHTML = '';
+               container.innerHTML = '';
+
+                const header = document.createElement('div');
+                header.className = 'task-header';
+                ['Verkefni', 'Staða', 'Frestur', 'Forgangur'].forEach(text => {
+                    const label = document.createElement('div');
+                    label.className = 'col-label';
+                    label.textContent = text;
+                    header.appendChild(label);
+                });
+                container.appendChild(header);
+
                 tasks.forEach(task => {
+                    const verkefni = (task[0] || '').trim();
+                    const flokkur = (task[1] || '').trim();
+                    const stada = (task[2] || '').trim();
+                    const frestur = (task[3] || '').trim();
+                    const forgangur = (task[4] || '').trim();
+
                     const rowEl = document.createElement('div');
                     rowEl.className = 'task-row';
-                    headers.forEach((header, idx) => {
-                        const col = document.createElement('div');
-                        col.className = 'col';
-                        const label = document.createElement('div');
-                        label.className = 'col-label';
-                        label.textContent = header;
-                        const value = document.createElement('div');
-                        value.textContent = task[idx] || '—';
-                        col.appendChild(label);
-                        col.appendChild(value);
-                        rowEl.appendChild(col);
+
+                    const nameCell = document.createElement('div');
+                    const nameEl = document.createElement('div');
+                    nameEl.className = 'task-name';
+                    nameEl.textContent = verkefni || '—';
+                    nameCell.appendChild(nameEl);
+                    if (flokkur) {
+                        const projEl = document.createElement('div');
+                        projEl.className = 'task-project';
+                        projEl.textContent = flokkur;
+                        nameCell.appendChild(projEl);
+                    }
+                    rowEl.appendChild(nameCell);
+
+                    [stada, frestur, forgangur].forEach(val => {
+                        const cell = document.createElement('div');
+                        cell.className = 'task-meta' + (val ? '' : ' empty');
+                        cell.textContent = val || '—';
+                        rowEl.appendChild(cell);
                     });
+
                     container.appendChild(rowEl);
                 });
             } catch (err) {
