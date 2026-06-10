@@ -59,6 +59,137 @@
             gap: 2vh;
         }
 
+.body-grid {
+            flex: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(360px, 28%);
+            gap: 3vw;
+            min-height: 0;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2vh;
+            min-height: 0;
+            min-width: 0;
+        }
+
+        .standings {
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .standings-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .trophy-icon {
+            width: clamp(20px, 1.6vw, 28px);
+            height: clamp(20px, 1.6vw, 28px);
+            color: var(--accent);
+            flex-shrink: 0;
+            margin-top: 6px;
+        }
+
+        .standings-title {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(18px, 1.8vw, 26px);
+            color: var(--text-primary);
+            line-height: 1.1;
+            letter-spacing: -0.01em;
+        }
+
+        .standings-subtitle {
+            font-family: 'Fraunces', serif;
+            font-style: italic;
+            font-weight: 300;
+            font-size: clamp(12px, 1.05vw, 15px);
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .standings-list {
+            margin-top: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .standings-header-row {
+            display: grid;
+            grid-template-columns: 28px 1fr 50px 56px;
+            gap: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--divider);
+        }
+
+        .standings-header-row .col-label {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(9px, 0.8vw, 11px);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-faint);
+        }
+
+        .standings-header-row .col-label.right {
+            text-align: right;
+        }
+
+        .standings-row {
+            display: grid;
+            grid-template-columns: 28px 1fr 50px 56px;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--divider);
+            align-items: baseline;
+        }
+
+        .standings-row:last-child {
+            border-bottom: none;
+        }
+
+        .standings-pos {
+            font-family: 'Fraunces', serif;
+            font-weight: 300;
+            font-size: clamp(16px, 1.4vw, 22px);
+            color: var(--text-muted);
+            line-height: 1;
+        }
+
+        .standings-row.leader .standings-pos {
+            color: var(--accent);
+        }
+
+        .standings-name {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(13px, 1.15vw, 16px);
+            color: var(--text-primary);
+        }
+
+        .standings-points {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(13px, 1.15vw, 16px);
+            color: var(--text-primary);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .standings-change {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(12px, 1vw, 14px);
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .standings-change.up { color: #97C459; }
+        .standings-change.down { color: #E24B4A; }
+        .standings-change.flat { color: var(--text-faint); }
+        
         .header {
             display: flex;
             justify-content: space-between;
@@ -171,7 +302,7 @@
 
         .ribbon {
             display: grid;
-            grid-template-columns: repeat(10, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             gap: 8px;
             flex: 1;
             min-height: 0;
@@ -371,16 +502,38 @@
     </header>
 
 
-    <div class="section-rule">Næstu tíu dagar</div>
+   <div class="body-grid">
 
-    <div class="ribbon" id="ribbon">
-        <div class="loading">Sæki dagatal…</div>
-    </div>
+      <div class="main-content">
 
-    <div class="section-rule">Verkefni</div>
+        <div class="section-rule">Næsta vika</div>
+        <div class="ribbon" id="ribbon">
+            <div class="loading">Sæki dagatal…</div>
+        </div>
 
-    <div class="tasks" id="tasks">
-        <div class="loading">Sæki verkefni…</div>
+        <div class="section-rule">Verkefni</div>
+        <div class="tasks" id="tasks">
+            <div class="loading">Sæki verkefni…</div>
+        </div>
+
+      </div>
+
+      <aside class="standings">
+        <div class="standings-header">
+            <svg class="trophy-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/>
+                <path d="M17 5h2a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-2M7 5H5a2 2 0 0 0-2 2 2 2 0 0 0 2 2h2"/>
+            </svg>
+            <div>
+                <div class="standings-title">Sameyki — rauðvínsdeildin</div>
+                <div class="standings-subtitle">HM í fótbolta — 2026</div>
+            </div>
+        </div>
+        <div class="standings-list" id="standings">
+            <div class="loading">Sæki stöðu…</div>
+        </div>
+      </aside>
+
     </div>
 
     <footer class="footer">
@@ -394,6 +547,8 @@
         const ICAL_URL = "https://calendar.google.com/calendar/ical/5d7b58f3403ff282b71178d6ef86024ab4c96457e2297abebc10f4dd2446aedc%40group.calendar.google.com/private-412178fd8edb868d6f055e06fcec46fd/basic.ics";
 
         const TASKS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSwtFB5_W-JlVRw_jYBh_R_IUPDkxQBLXjonQP15fooMLrr6arOOs_AB9mugjr_o5c4fsuHfD3TB7yP/pub?gid=0&single=true&output=csv";
+
+        const STANDINGS_CSV_URL = "PASTE_YOUR_STANDINGS_CSV_URL_HERE";
         
         const WEEKDAYS_IS = ['Sun', 'Mán', 'Þri', 'Mið', 'Fim', 'Fös', 'Lau'];
         const MONTHS_IS = ['jan', 'feb', 'mar', 'apr', 'maí', 'jún', 'júl', 'ágú', 'sep', 'okt', 'nóv', 'des'];
@@ -425,7 +580,7 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
             const days = [];
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 7; i++) {
                 const d = new Date(today);
                 d.setDate(d.getDate() + i);
                 days.push({ date: d, events: [] });
@@ -447,14 +602,14 @@
                 const vevents = comp.getAllSubcomponents('vevent');
 
                 const windowEnd = new Date(today);
-                windowEnd.setDate(windowEnd.getDate() + 10);
+                windowEnd.setDate(windowEnd.getDate() + 7);
 
                 vevents.forEach(vevent => {
                     const event = new ICAL.Event(vevent);
                     const start = event.startDate.toJSDate();
                     if (start >= today && start < windowEnd) {
                         const dayIndex = Math.floor((start - today) / (1000 * 60 * 60 * 24));
-                        if (dayIndex >= 0 && dayIndex < 10) {
+                        if (dayIndex >= 0 && dayIndex < 7) {
                             days[dayIndex].events.push({
                                 start: start,
                                 title: event.summary || '(ónefnt)',
@@ -570,6 +725,82 @@ function parseCSV(text) {
                 container.innerHTML = '<div class="loading">Verkefni ekki tiltæk</div>';
             }
         }
+
+async function loadStandings() {
+            const container = document.getElementById('standings');
+
+            if (!STANDINGS_CSV_URL || STANDINGS_CSV_URL === "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRhwgORQZO_ILl6pNzy5-kSNSBor0S6ILKX7L6brQh9uARoMQb_EZFmDn5tCQGvy_e6XCEXaZ07Sfs/pub?output=csv") {
+                container.innerHTML = '<div class="loading">Engin stöðuslóð stillt</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(STANDINGS_CSV_URL);
+                if (!response.ok) throw new Error('Network error');
+                const text = await response.text();
+
+                const rows = parseCSV(text);
+                if (rows.length < 2) {
+                    container.innerHTML = '<div class="loading">Engin staða</div>';
+                    return;
+                }
+
+                const standings = rows.slice(1).filter(r => r.some(cell => cell.trim() !== ''));
+
+                container.innerHTML = '';
+
+                const header = document.createElement('div');
+                header.className = 'standings-header-row';
+                ['#', 'Nafn', 'Stig', 'Breyting'].forEach((text, idx) => {
+                    const label = document.createElement('div');
+                    label.className = 'col-label' + (idx >= 2 ? ' right' : '');
+                    label.textContent = text;
+                    header.appendChild(label);
+                });
+                container.appendChild(header);
+
+                standings.forEach((row, idx) => {
+                    const saeti = (row[0] || '').trim();
+                    const nafn = (row[1] || '').trim();
+                    const stig = (row[2] || '').trim();
+                    const breyting = (row[3] || '').trim();
+
+                    const rowEl = document.createElement('div');
+                    rowEl.className = 'standings-row' + (idx === 0 ? ' leader' : '');
+
+                    const posEl = document.createElement('div');
+                    posEl.className = 'standings-pos';
+                    posEl.textContent = saeti || (idx + 1);
+                    rowEl.appendChild(posEl);
+
+                    const nameEl = document.createElement('div');
+                    nameEl.className = 'standings-name';
+                    nameEl.textContent = nafn || '—';
+                    rowEl.appendChild(nameEl);
+
+                    const pointsEl = document.createElement('div');
+                    pointsEl.className = 'standings-points';
+                    pointsEl.textContent = stig || '0';
+                    rowEl.appendChild(pointsEl);
+
+                    const changeEl = document.createElement('div');
+                    const num = parseFloat(breyting.replace(',', '.').replace('−', '-'));
+                    let cls = 'flat';
+                    let display = '0';
+                    if (!isNaN(num) && num > 0) { cls = 'up'; display = '+' + num; }
+                    else if (!isNaN(num) && num < 0) { cls = 'down'; display = '−' + Math.abs(num); }
+                    changeEl.className = 'standings-change ' + cls;
+                    changeEl.textContent = display;
+                    rowEl.appendChild(changeEl);
+
+                    container.appendChild(rowEl);
+                });
+            } catch (err) {
+                console.error('Standings load failed:', err);
+                container.innerHTML = '<div class="loading">Staða ekki tiltæk</div>';
+            }
+        }
+
         
         function renderRibbon(days) {
             const ribbon = document.getElementById('ribbon');
@@ -644,6 +875,9 @@ const bannerEl = document.getElementById('banner');
 
         loadTasks();
         setInterval(loadTasks, 15 * 60 * 1000);
+
+        loadStandings();
+        setInterval(loadStandings, 15 * 60 * 1000);
         
         setTimeout(() => location.reload(), 60 * 60 * 1000);
     </script>
