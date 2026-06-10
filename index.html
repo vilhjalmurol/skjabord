@@ -729,7 +729,7 @@ function parseCSV(text) {
 async function loadStandings() {
             const container = document.getElementById('standings');
 
-            if (!STANDINGS_CSV_URL || STANDINGS_CSV_URL === "https://docs.google.com/spreadsheets/d/e/2PACX-1vSRhwgORQZO_ILl6pNzy5-kSNSBor0S6ILKX7L6brQh9uARoMQb_EZFmDn5tCQGvy_e6XCEXaZ07Sfs/pub?gid=0&single=true&output=csv") {
+            if (!STANDINGS_CSV_URL || STANDINGS_CSV_URL === "PASTE_YOUR_STANDINGS_CSV_URL_HERE") {
                 container.innerHTML = '<div class="loading">Engin stöðuslóð stillt</div>';
                 return;
             }
