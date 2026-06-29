@@ -480,6 +480,33 @@
             font-size: 14px;
         }
 
+        .bracket-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 0;
+            gap: 10px;
+        }
+
+        .bracket-image {
+            max-width: 100%;
+            max-height: calc(100% - 24px);
+            object-fit: contain;
+        }
+
+        .bracket-attribution {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(10px, 0.85vw, 12px);
+            color: var(--text-faint);
+        }
+
+        .bracket-attribution a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+        
         .footer {
             padding-top: 1.5vh;
             border-top: 1px solid var(--divider);
@@ -525,6 +552,12 @@
             <div class="loading">Sæki verkefni…</div>
         </div>
   -->
+
+          <div class="bracket-container">
+          <img class="bracket-image" src="https://soccer2026.app/images/bracket/world-cup-2026-bracket-en.png" alt="World Cup 2026 Bracket">
+          <div class="bracket-attribution">Bracket by <a href="https://soccer2026.app/bracket" target="_blank">Bola 2026</a></div>
+      </div>
+          
       </div>
 
       <aside class="standings">
