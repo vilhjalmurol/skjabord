@@ -205,6 +205,15 @@
             letter-spacing: 0.02em;
         }
 
+
+        .title-struck {
+            text-decoration: line-through;
+            text-decoration-thickness: 1px;
+            color: var(--text-muted);
+            margin-right: 8px;
+        }
+
+        
         .clock-block {
             text-align: right;
             display: flex;
@@ -492,7 +501,7 @@
     <div class="banner" id="banner"></div>
     
     <header class="header">
-        <div class="header-title">Orlofsdeild</div>
+       <div class="header-title"><span class="title-struck">Orlofsdeild</span> HM í fótbolta 2026</div>
         <div class="clock-block">
             <div class="clock-time">
                 <span id="clock-hours">--</span><span class="clock-colon">:</span><span id="clock-minutes">--</span>
@@ -505,7 +514,7 @@
    <div class="body-grid">
 
       <div class="main-content">
-
+<!--
         <div class="section-rule">Næsta vika</div>
         <div class="ribbon" id="ribbon">
             <div class="loading">Sæki dagatal…</div>
@@ -515,7 +524,7 @@
         <div class="tasks" id="tasks">
             <div class="loading">Sæki verkefni…</div>
         </div>
-
+  -->
       </div>
 
       <aside class="standings">
@@ -747,6 +756,11 @@ async function loadStandings() {
 
                 const standings = rows.slice(1).filter(r => r.some(cell => cell.trim() !== ''));
 
+                const updateCell = (rows[0][5] || '').trim();
+                const footerEl = document.getElementById('last-sync');
+                if (footerEl) {
+                    footerEl.textContent = updateCell ? 'Uppfært ' + updateCell : 'Staða ekki uppfærð';
+                }
                 container.innerHTML = '';
 
                 const header = document.createElement('div');
@@ -871,11 +885,11 @@ const bannerEl = document.getElementById('banner');
         updateClock();
         setInterval(updateClock, 1000);
 
-        loadCalendar();
-        setInterval(loadCalendar, 15 * 60 * 1000);
+       // loadCalendar();
+       // setInterval(loadCalendar, 15 * 60 * 1000);
 
-        loadTasks();
-        setInterval(loadTasks, 15 * 60 * 1000);
+       // loadTasks();
+       // setInterval(loadTasks, 15 * 60 * 1000);
 
         loadStandings();
         setInterval(loadStandings, 15 * 60 * 1000);
