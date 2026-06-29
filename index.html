@@ -697,6 +697,53 @@
                 d.setDate(d.getDate() + i);
                 days.push({ date: d, events: [] });
             }
+
+            if (!ICAL_URL || ICAL_URL === "PASTE_YOUR_ICAL_URL_HERE") {
+                renderRibbon(days);
+                return;
+            }
+
+            try {
+                const proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(ICAL_URL);
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error('Network error');
+                const text = await response.text();
+
+                const jcalData = ICAL.parse(text);
+                const comp = new ICAL.Component(jcalData);
+                const vevents = comp.getAllSubcomponents('vevent');
+
+                const windowEnd = new Date(today);
+                windowEnd.setDate(windowEnd.getDate() + 7);
+
+                vevents.forEach(vevent => {
+                    const event = new ICAL.Event(vevent);
+                    const start = event.startDate.toJSDate();
+                    if (start >= today && start < windowEnd) {
+                        const dayIndex = Math.floor((start - today) / (1000 * 60 * 60 * 24));
+                        if (dayIndex >= 0 && dayIndex < 7) {
+                            days[dayIndex].events.push({
+                                start: start,
+                                title: event.summary || '(ónefnt)',
+                                allDay: event.startDate.isDate
+                            });
+                        }
+                    }
+                });
+
+                days.forEach(day => {
+                    day.events.sort((a, b) => a.start - b.start);
+                });
+
+                renderRibbon(days);
+                document.getElementById('last-sync').textContent =
+                    'Dagatal samstillt ' + formatTime(new Date());
+            } catch (err) {
+                console.error('Calendar load failed:', err);
+                renderRibbon(days);
+                document.getElementById('last-sync').textContent = 'Dagatal ekki tiltækt';
+            }
+        }
 async function loadGames() {
             const container = document.getElementById('games');
 
@@ -781,53 +828,6 @@ async function loadGames() {
                 container.innerHTML = '<div class="loading">Leikir ekki tiltækir</div>';
             }
         }
-            if (!ICAL_URL || ICAL_URL === "PASTE_YOUR_ICAL_URL_HERE") {
-                renderRibbon(days);
-                return;
-            }
-
-            try {
-                const proxyUrl = 'https://corsproxy.io/?url=' + encodeURIComponent(ICAL_URL);
-                const response = await fetch(proxyUrl);
-                if (!response.ok) throw new Error('Network error');
-                const text = await response.text();
-
-                const jcalData = ICAL.parse(text);
-                const comp = new ICAL.Component(jcalData);
-                const vevents = comp.getAllSubcomponents('vevent');
-
-                const windowEnd = new Date(today);
-                windowEnd.setDate(windowEnd.getDate() + 7);
-
-                vevents.forEach(vevent => {
-                    const event = new ICAL.Event(vevent);
-                    const start = event.startDate.toJSDate();
-                    if (start >= today && start < windowEnd) {
-                        const dayIndex = Math.floor((start - today) / (1000 * 60 * 60 * 24));
-                        if (dayIndex >= 0 && dayIndex < 7) {
-                            days[dayIndex].events.push({
-                                start: start,
-                                title: event.summary || '(ónefnt)',
-                                allDay: event.startDate.isDate
-                            });
-                        }
-                    }
-                });
-
-                days.forEach(day => {
-                    day.events.sort((a, b) => a.start - b.start);
-                });
-
-                renderRibbon(days);
-                document.getElementById('last-sync').textContent =
-                    'Dagatal samstillt ' + formatTime(new Date());
-            } catch (err) {
-                console.error('Calendar load failed:', err);
-                renderRibbon(days);
-                document.getElementById('last-sync').textContent = 'Dagatal ekki tiltækt';
-            }
-        }
-
 function parseCSV(text) {
             const rows = [];
             let row = [], field = '', inQuotes = false;
