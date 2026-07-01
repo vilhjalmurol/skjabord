@@ -549,11 +549,14 @@
             gap: 10px;
         }
 
-        .bracket-image {
-            width: 100%;
-            height: calc(100% - 24px);
-            object-fit: contain;
-        }
+    .bracket-image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
 
         .bracket-attribution {
             font-family: 'Inter', sans-serif;
